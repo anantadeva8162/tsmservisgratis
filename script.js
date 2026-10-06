@@ -1,194 +1,343 @@
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwrhhS7VFrOi__IJ9B7ADVOjv2_1me8pzOuMWoCM7xzF70d2YyseNo0hHiMiO6tn-me/exec";
+<script>
 
 
-document.addEventListener("DOMContentLoaded", function () {
+// =====================================================
+// FORM
+// =====================================================
 
-    const form = document.getElementById("formPendaftaran");
-
-    if (!form) {
-        console.error("Form pendaftaran tidak ditemukan.");
-        return;
-    }
+const form =
+    document.getElementById(
+        'registrationForm'
+    );
 
 
-    form.addEventListener("submit", function (e) {
+const submitBtn =
+    document.getElementById(
+        'submitBtn'
+    );
 
-        e.preventDefault();
+
+const loading =
+    document.getElementById(
+        'loading'
+    );
+
+
+const success =
+    document.getElementById(
+        'success'
+    );
+
+
+const error =
+    document.getElementById(
+        'error'
+    );
+
+
+
+// =====================================================
+// SUBMIT
+// =====================================================
+
+form.addEventListener(
+    'submit',
+    function(event) {
+
+        event.preventDefault();
+
+
+        // ---------------------------------------------
+        // AMBIL DATA
+        // ---------------------------------------------
+
+        const whatsapp =
+            document
+                .getElementById('whatsapp')
+                .value
+                .trim();
 
 
         const nama =
-            document.getElementById("nama").value.trim();
-
-        const whatsapp =
-            document.getElementById("whatsapp").value.trim();
-
-        const merk =
-            document.getElementById("merk").value.trim();
-
-        const nopol =
-            document.getElementById("nopol").value.trim().toUpperCase();
+            document
+                .getElementById('nama')
+                .value
+                .trim();
 
 
+        const motor =
+            document
+                .getElementById('motor')
+                .value
+                .trim();
+
+
+        const polisi =
+            document
+                .getElementById('polisi')
+                .value
+                .trim()
+                .toUpperCase();
+
+
+
+        // ---------------------------------------------
+        // RESET PESAN
+        // ---------------------------------------------
+
+        success.style.display =
+            'none';
+
+        error.style.display =
+            'none';
+
+
+
+        // ---------------------------------------------
         // VALIDASI
+        // ---------------------------------------------
 
-        if (!whatsapp) {
-            alert("Nomor WhatsApp wajib diisi.");
+        if (
+            !whatsapp ||
+            !nama ||
+            !motor ||
+            !polisi
+        ) {
+
+            tampilkanError(
+                'Semua kolom wajib diisi.'
+            );
+
             return;
-        }
-
-        if (!nama) {
-            alert("Nama wajib diisi.");
-            return;
-        }
-
-        if (!merk) {
-            alert("Merk / tipe sepeda motor wajib diisi.");
-            return;
-        }
-
-        if (!nopol) {
-            alert("Nomor polisi wajib diisi.");
-            return;
-        }
-
-
-        // BUAT IFRAME TERSEMBUNYI
-
-        let iframe =
-            document.getElementById("googleSubmitFrame");
-
-        if (!iframe) {
-
-            iframe = document.createElement("iframe");
-
-            iframe.id = "googleSubmitFrame";
-            iframe.name = "googleSubmitFrame";
-
-            iframe.style.display = "none";
-
-            document.body.appendChild(iframe);
-        }
-
-
-        // BUAT FORM UNTUK GOOGLE APPS SCRIPT
-
-        const googleForm =
-            document.createElement("form");
-
-        googleForm.method = "POST";
-        googleForm.action = SCRIPT_URL;
-        googleForm.target = "googleSubmitFrame";
-        googleForm.style.display = "none";
-
-
-        // DATA NAMA
-
-        const namaInput =
-            document.createElement("input");
-
-        namaInput.type = "hidden";
-        namaInput.name = "nama";
-        namaInput.value = nama;
-
-        googleForm.appendChild(namaInput);
-
-
-        // DATA WHATSAPP
-
-        const whatsappInput =
-            document.createElement("input");
-
-        whatsappInput.type = "hidden";
-        whatsappInput.name = "whatsapp";
-        whatsappInput.value = whatsapp;
-
-        googleForm.appendChild(whatsappInput);
-
-
-        // DATA MERK
-
-        const merkInput =
-            document.createElement("input");
-
-        merkInput.type = "hidden";
-        merkInput.name = "merk";
-        merkInput.value = merk;
-
-        googleForm.appendChild(merkInput);
-
-
-        // DATA NOPOL
-
-        const nopolInput =
-            document.createElement("input");
-
-        nopolInput.type = "hidden";
-        nopolInput.name = "nopol";
-        nopolInput.value = nopol;
-
-        googleForm.appendChild(nopolInput);
-
-
-        document.body.appendChild(googleForm);
-
-
-        // TOMBOL
-
-        const button =
-            document.getElementById("submitButton");
-
-        if (button) {
-
-            button.disabled = true;
-
-            button.dataset.oldText =
-                button.innerHTML;
-
-            button.innerHTML =
-                "MENGIRIM...";
 
         }
 
 
-        // KIRIM
 
-        googleForm.submit();
+        // ---------------------------------------------
+        // VALIDASI WHATSAPP
+        // ---------------------------------------------
 
-
-        // TUNGGU PROSES
-
-        setTimeout(function () {
-
-            alert(
-                "PENDAFTARAN BERHASIL!\n\n" +
-                "Nama: " + nama + "\n" +
-                "WhatsApp: " + whatsapp + "\n" +
-                "Motor: " + merk + "\n" +
-                "No. Polisi: " + nopol
+        const nomor =
+            whatsapp.replace(
+                /\D/g,
+                ''
             );
 
 
-            // RESET FORM
+        if (nomor.length < 10) {
 
-            form.reset();
+            tampilkanError(
+                'Nomor WhatsApp tidak valid.'
+            );
 
+            return;
 
-            // KEMBALIKAN TOMBOL
-
-            if (button) {
-
-                button.disabled = false;
-
-                button.innerHTML =
-                    button.dataset.oldText;
-            }
+        }
 
 
-            googleForm.remove();
 
-        }, 2000);
+        // ---------------------------------------------
+        // TAMPILKAN LOADING
+        // ---------------------------------------------
 
-    });
+        loading.style.display =
+            'block';
 
-});
+
+        submitBtn.disabled =
+            true;
+
+
+        submitBtn.innerHTML =
+            'MENYIMPAN...';
+
+
+
+        // ---------------------------------------------
+        // DATA
+        // ---------------------------------------------
+
+        const data = {
+
+            whatsapp:
+                whatsapp,
+
+            nama:
+                nama,
+
+            motor:
+                motor,
+
+            polisi:
+                polisi
+
+        };
+
+
+
+        // ---------------------------------------------
+        // KIRIM KE CODE.GS
+        // ---------------------------------------------
+
+        google.script.run
+
+            .withSuccessHandler(
+                function(response) {
+
+
+                    loading.style.display =
+                        'none';
+
+
+                    submitBtn.disabled =
+                        false;
+
+
+                    submitBtn.innerHTML =
+                        'DAFTAR SEKARANG →';
+
+
+
+                    // ---------------------------------
+                    // BERHASIL
+                    // ---------------------------------
+
+                    if (
+                        response &&
+                        response.success
+                    ) {
+
+                        success.innerHTML =
+                            '✓ ' +
+                            response.message;
+
+
+                        success.style.display =
+                            'block';
+
+
+                        form.reset();
+
+
+                        window.scrollTo({
+
+                            top: 0,
+
+                            behavior: 'smooth'
+
+                        });
+
+
+                    }
+
+                    // ---------------------------------
+                    // GAGAL
+                    // ---------------------------------
+
+                    else {
+
+                        tampilkanError(
+
+                            response
+                                ? response.message
+                                : 'Data gagal disimpan.'
+
+                        );
+
+                    }
+
+                }
+            )
+
+
+            .withFailureHandler(
+                function(err) {
+
+
+                    loading.style.display =
+                        'none';
+
+
+                    submitBtn.disabled =
+                        false;
+
+
+                    submitBtn.innerHTML =
+                        'DAFTAR SEKARANG →';
+
+
+                    tampilkanError(
+                        'Terjadi kesalahan saat mengirim data.'
+                    );
+
+
+                    console.error(err);
+
+                }
+            )
+
+
+            .simpanData(data);
+
+    }
+);
+
+
+
+// =====================================================
+// ERROR
+// =====================================================
+
+function tampilkanError(pesan) {
+
+    error.innerHTML =
+        '⚠ ' + pesan;
+
+    error.style.display =
+        'block';
+
+}
+
+
+
+// =====================================================
+// NOMOR POLISI OTOMATIS HURUF BESAR
+// =====================================================
+
+document
+    .getElementById('polisi')
+    .addEventListener(
+        'input',
+        function() {
+
+            this.value =
+                this.value.toUpperCase();
+
+        }
+    );
+
+
+
+// =====================================================
+// NOMOR WHATSAPP
+// Hanya angka, spasi, +, -, (, )
+// =====================================================
+
+document
+    .getElementById('whatsapp')
+    .addEventListener(
+        'input',
+        function() {
+
+            this.value =
+                this.value.replace(
+                    /[^0-9+\-\s()]/g,
+                    ''
+                );
+
+        }
+    );
+
+
+</script>
