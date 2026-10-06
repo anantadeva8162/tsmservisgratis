@@ -10,7 +10,7 @@ const submitBtn = document.getElementById("submitBtn");
 const btnText = document.getElementById("btnText");
 
 // GANTI dengan URL Web App Google Apps Script Anda.
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7V92gY4tvxGIhAs1gSKaScueACiXSuvFxwJdsG-iDdr71gMqMBa67MdmwksQEBxB0_Q/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeaZPr4Ys_Wh-WitsfesVMC6OKt57654Mt_Ng8f_-wBbWicYHZPEXXAhvnTTZVpoQBfg/exec";
 quotaText.textContent = quota;
 
 function setProgress(total) {
