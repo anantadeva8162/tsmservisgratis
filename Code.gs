@@ -1,21 +1,29 @@
-// =====================================================
+// ======================================================
+// SISTEM PENDAFTARAN KENDARAAN
+// GOOGLE APPS SCRIPT
+// ======================================================
+
+
+// ======================================================
 // KONFIGURASI
-// =====================================================
+// ======================================================
 
-// ID GOOGLE SPREADSHEET KAMU
-const SPREADSHEET_ID = '1wKk0eJ-iB3i1OB5c97ccatff7UkNheQwGJDLQIqxLE4';
+// ID Google Spreadsheet kamu
+const SPREADSHEET_ID =
+  '1wKk0eJ-iB3i1OB5c97ccatff7UkNheQwGJDLQIqxLE4';
 
-// Nama sheet tempat data disimpan
-const SHEET_NAME = 'DATA PENDAFTAR';
+// Nama sheet untuk menyimpan data
+const SHEET_NAME =
+  'DATA PENDAFTAR';
 
-// URL WEB APP KAMU
+// URL Web App kamu
 const WEB_APP_URL =
   'https://script.google.com/macros/s/AKfycbwrhhS7VFrOi__IJ9B7ADVOjv2_1me8pzOuMWoCM7xzF70d2YyseNo0hHiMiO6tn-me/exec';
 
 
-// =====================================================
-// MEMBUKA WEBSITE
-// =====================================================
+// ======================================================
+// MEMBUKA HALAMAN WEB
+// ======================================================
 
 function doGet() {
 
@@ -30,9 +38,10 @@ function doGet() {
 }
 
 
-// =====================================================
+// ======================================================
 // MEMANGGIL FILE HTML
-// =====================================================
+// Digunakan untuk CSS.html dan JS.html
+// ======================================================
 
 function include(filename) {
 
@@ -43,9 +52,9 @@ function include(filename) {
 }
 
 
-// =====================================================
-// MENDAPATKAN URL WEB APP
-// =====================================================
+// ======================================================
+// MENGAMBIL URL WEB APP
+// ======================================================
 
 function getWebAppUrl() {
 
@@ -54,17 +63,17 @@ function getWebAppUrl() {
 }
 
 
-// =====================================================
-// MENYIMPAN DATA
-// =====================================================
+// ======================================================
+// MENYIMPAN DATA PENDAFTAR
+// ======================================================
 
 function simpanData(data) {
 
   try {
 
-    // -----------------------------------------------
-    // VALIDASI DATA
-    // -----------------------------------------------
+    // ----------------------------------------------
+    // CEK DATA
+    // ----------------------------------------------
 
     if (!data) {
 
@@ -83,15 +92,15 @@ function simpanData(data) {
     ) {
 
       throw new Error(
-        'Semua data wajib diisi.'
+        'Semua kolom wajib diisi.'
       );
 
     }
 
 
-    // -----------------------------------------------
-    // BUKA GOOGLE SHEET
-    // -----------------------------------------------
+    // ----------------------------------------------
+    // BUKA SPREADSHEET
+    // ----------------------------------------------
 
     const spreadsheet =
       SpreadsheetApp.openById(
@@ -99,15 +108,20 @@ function simpanData(data) {
       );
 
 
+    // ----------------------------------------------
+    // CARI SHEET
+    // ----------------------------------------------
+
     let sheet =
       spreadsheet.getSheetByName(
         SHEET_NAME
       );
 
 
-    // -----------------------------------------------
-    // BUAT SHEET JIKA BELUM ADA
-    // -----------------------------------------------
+    // ----------------------------------------------
+    // JIKA SHEET BELUM ADA
+    // BUAT OTOMATIS
+    // ----------------------------------------------
 
     if (!sheet) {
 
@@ -115,6 +129,15 @@ function simpanData(data) {
         spreadsheet.insertSheet(
           SHEET_NAME
         );
+
+    }
+
+
+    // ----------------------------------------------
+    // BUAT HEADER JIKA BELUM ADA
+    // ----------------------------------------------
+
+    if (sheet.getLastRow() === 0) {
 
       sheet.appendRow([
 
@@ -133,7 +156,8 @@ function simpanData(data) {
       ]);
 
 
-      // Header
+      // Format header
+
       const header =
         sheet.getRange(
           1,
@@ -143,10 +167,15 @@ function simpanData(data) {
         );
 
 
-      header
-        .setFontWeight('bold')
-        .setBackground('#111111')
-        .setFontColor('#D4AF37');
+      header.setFontWeight('bold');
+
+      header.setBackground(
+        '#111111'
+      );
+
+      header.setFontColor(
+        '#D4AF37'
+      );
 
 
       sheet.setFrozenRows(1);
@@ -154,11 +183,11 @@ function simpanData(data) {
     }
 
 
-    // -----------------------------------------------
+    // ----------------------------------------------
     // LOCK
-    // Mencegah data bentrok ketika banyak orang
-    // mendaftar secara bersamaan
-    // -----------------------------------------------
+    // Supaya data tidak bentrok
+    // ketika banyak orang daftar
+    // ----------------------------------------------
 
     const lock =
       LockService.getScriptLock();
@@ -168,6 +197,10 @@ function simpanData(data) {
 
 
     try {
+
+      // --------------------------------------------
+      // NOMOR PENDAFTARAN
+      // --------------------------------------------
 
       const lastRow =
         sheet.getLastRow();
@@ -179,13 +212,19 @@ function simpanData(data) {
           : lastRow;
 
 
+
+      // --------------------------------------------
+      // WAKTU
+      // --------------------------------------------
+
       const waktu =
         new Date();
 
 
-      // ---------------------------------------------
-      // SIMPAN DATA
-      // ---------------------------------------------
+
+      // --------------------------------------------
+      // DATA YANG DISIMPAN
+      // --------------------------------------------
 
       sheet.appendRow([
 
@@ -211,9 +250,9 @@ function simpanData(data) {
     }
 
 
-    // -----------------------------------------------
-    // RESPONSE
-    // -----------------------------------------------
+    // ----------------------------------------------
+    // BERHASIL
+    // ----------------------------------------------
 
     return {
 
@@ -226,6 +265,11 @@ function simpanData(data) {
 
 
   } catch (error) {
+
+
+    // ----------------------------------------------
+    // ERROR
+    // ----------------------------------------------
 
     return {
 
@@ -241,10 +285,10 @@ function simpanData(data) {
 }
 
 
-// =====================================================
-// MEMBUAT SHEET
-// Jalankan satu kali jika spreadsheet masih kosong
-// =====================================================
+// ======================================================
+// MEMBUAT SHEET SECARA OTOMATIS
+// Jalankan fungsi ini SATU KALI
+// ======================================================
 
 function buatSheet() {
 
@@ -260,6 +304,10 @@ function buatSheet() {
     );
 
 
+  // ----------------------------------------------
+  // BUAT SHEET JIKA BELUM ADA
+  // ----------------------------------------------
+
   if (!sheet) {
 
     sheet =
@@ -269,6 +317,10 @@ function buatSheet() {
 
   }
 
+
+  // ----------------------------------------------
+  // BUAT HEADER
+  // ----------------------------------------------
 
   if (sheet.getLastRow() === 0) {
 
@@ -291,6 +343,10 @@ function buatSheet() {
   }
 
 
+  // ----------------------------------------------
+  // FORMAT HEADER
+  // ----------------------------------------------
+
   const header =
     sheet.getRange(
       1,
@@ -300,12 +356,117 @@ function buatSheet() {
     );
 
 
-  header
-    .setFontWeight('bold')
-    .setBackground('#111111')
-    .setFontColor('#D4AF37');
+  header.setFontWeight('bold');
+
+  header.setBackground(
+    '#111111'
+  );
+
+  header.setFontColor(
+    '#D4AF37'
+  );
 
 
   sheet.setFrozenRows(1);
+
+
+  // ----------------------------------------------
+  // FORMAT KOLOM WAKTU
+  // ----------------------------------------------
+
+  if (sheet.getMaxRows() > 1) {
+
+    sheet
+      .getRange(
+        2,
+        2,
+        sheet.getMaxRows() - 1,
+        1
+      )
+      .setNumberFormat(
+        'dd/MM/yyyy HH:mm:ss'
+      );
+
+  }
+
+
+  // ----------------------------------------------
+  // ATUR LEBAR KOLOM
+  // ----------------------------------------------
+
+  sheet.setColumnWidth(
+    1,
+    60
+  );
+
+  sheet.setColumnWidth(
+    2,
+    160
+  );
+
+  sheet.setColumnWidth(
+    3,
+    160
+  );
+
+  sheet.setColumnWidth(
+    4,
+    180
+  );
+
+  sheet.setColumnWidth(
+    5,
+    220
+  );
+
+  sheet.setColumnWidth(
+    6,
+    160
+  );
+
+
+  Logger.log(
+    'Sheet berhasil dibuat.'
+  );
+
+}
+
+
+// ======================================================
+// TEST KONEKSI
+// Gunakan untuk memastikan Spreadsheet terhubung
+// ======================================================
+
+function testKoneksi() {
+
+  const spreadsheet =
+    SpreadsheetApp.openById(
+      SPREADSHEET_ID
+    );
+
+
+  Logger.log(
+    'Nama Spreadsheet: ' +
+    spreadsheet.getName()
+  );
+
+
+  Logger.log(
+    'URL Web App: ' +
+    WEB_APP_URL
+  );
+
+
+  return {
+
+    success: true,
+
+    spreadsheet:
+      spreadsheet.getName(),
+
+    webApp:
+      WEB_APP_URL
+
+  };
 
 }
