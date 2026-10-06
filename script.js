@@ -26,19 +26,31 @@ function setProgress(total) {
 async function loadQuota() {
   if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_URL")) {
     setProgress(0);
-    statusEl.textContent = "Website belum dihubungkan ke Google Sheets. Masukkan URL Apps Script pada script.js.";
+    statusEl.textContent =
+      "Website belum dihubungkan ke Google Sheets. Masukkan URL Apps Script pada script.js.";
     return;
   }
+
   try {
-    const res = await fetch(`${APPS_SCRIPT_URL}?action=count`, { cache: "no-store" });
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=count`, {
+      cache: "no-store"
+    });
+
     const data = await res.json();
-    if (!data.ok) throw new Error(data.message || "Gagal membaca kuota.");
-    setProgress(data.count);
+
+    if (!data.success) {
+      throw new Error(data.message || "Gagal membaca kuota.");
+    }
+
+    setProgress(data.total);
+
   } catch (err) {
     setProgress(0);
-    statusEl.textContent = "Koneksi kuota belum dapat diperiksa. Silakan coba lagi.";
+    statusEl.textContent =
+      "Koneksi kuota belum dapat diperiksa. Silakan coba lagi.";
     console.error(err);
   }
+}
 }
 
 form.addEventListener("submit", async (e) => {
