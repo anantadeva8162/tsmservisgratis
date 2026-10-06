@@ -1,80 +1,337 @@
-<form id="formPendaftaran">
+<!DOCTYPE html>
 
-    <!-- 01 NOMOR WHATSAPP -->
-    <div class="form-group">
-        <label for="whatsapp">
-            01 — NOMOR WHATSAPP
-        </label>
+<html>
 
-        <input
-            type="tel"
-            id="whatsapp"
-            name="whatsapp"
-            placeholder="Contoh: 085856985288"
-            inputmode="numeric"
-            autocomplete="tel"
-            required
-        >
-    </div>
+<head>
 
+    <base target="_top">
 
-    <!-- 02 NAMA -->
-    <div class="form-group">
-        <label for="nama">
-            02 — NAMA
-        </label>
-
-        <input
-            type="text"
-            id="nama"
-            name="nama"
-            placeholder="Nama lengkap"
-            autocomplete="name"
-            required
-        >
-    </div>
-
-
-    <!-- 03 MERK / TIPE SEPEDA MOTOR -->
-    <div class="form-group">
-        <label for="merk">
-            03 — MERK / TIPE SEPEDA MOTOR
-        </label>
-
-        <input
-            type="text"
-            id="merk"
-            name="merk"
-            placeholder="Contoh: Honda N MAX"
-            required
-        >
-    </div>
-
-
-    <!-- 04 NOMOR POLISI -->
-    <div class="form-group">
-        <label for="nopol">
-            04 — NOMOR POLISI
-        </label>
-
-        <input
-            type="text"
-            id="nopol"
-            name="nopol"
-            placeholder="Contoh: AG 2222 KCF"
-            style="text-transform: uppercase;"
-            required
-        >
-    </div>
-
-
-    <!-- TOMBOL -->
-    <button
-        type="submit"
-        id="submitButton"
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
     >
-        DAFTAR SEKARANG
-        <span>→</span>
-    </button>
 
-</form>
+    <title>
+        Pendaftaran Kendaraan
+    </title>
+
+
+    <!-- CSS -->
+
+    <?!= include('CSS'); ?>
+
+</head>
+
+
+<body>
+
+
+    <!-- =================================================
+         BACKGROUND
+    ================================================== -->
+
+    <div class="background">
+
+        <div class="glow one"></div>
+
+        <div class="glow two"></div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         MAIN
+    ================================================== -->
+
+    <main class="main-container">
+
+
+        <section class="card">
+
+
+            <!-- LOGO -->
+
+            <div class="logo">
+
+                🏍️
+
+            </div>
+
+
+
+            <!-- TITLE -->
+
+            <h1 class="title">
+
+                PENDAFTARAN
+
+                <span>
+                    KENDARAAN
+                </span>
+
+            </h1>
+
+
+
+            <p class="subtitle">
+
+                Silakan isi data kendaraan
+                dengan lengkap dan benar
+                untuk melakukan pendaftaran.
+
+            </p>
+
+
+
+            <!-- =================================================
+                 FORM
+            ================================================== -->
+
+            <form
+                id="registrationForm"
+            >
+
+
+                <!-- WHATSAPP -->
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                    >
+
+                        <span class="number">
+                            01
+                        </span>
+
+                        NOMOR WHATSAPP
+
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ☎
+                        </span>
+
+
+                        <input
+                            type="tel"
+                            id="whatsapp"
+                            name="whatsapp"
+                            placeholder="Contoh: 085856985288"
+                            autocomplete="tel"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- NAMA -->
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                    >
+
+                        <span class="number">
+                            02
+                        </span>
+
+                        NAMA LENGKAP
+
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            👤
+                        </span>
+
+
+                        <input
+                            type="text"
+                            id="nama"
+                            name="nama"
+                            placeholder="Masukkan nama lengkap"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- MOTOR -->
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                    >
+
+                        <span class="number">
+                            03
+                        </span>
+
+                        MERK / TIPE SEPEDA MOTOR
+
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🏍
+                        </span>
+
+
+                        <input
+                            type="text"
+                            id="motor"
+                            name="motor"
+                            placeholder="Contoh: Honda NMAX"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- POLISI -->
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                    >
+
+                        <span class="number">
+                            04
+                        </span>
+
+                        NOMOR POLISI
+
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ▣
+                        </span>
+
+
+                        <input
+                            type="text"
+                            id="polisi"
+                            name="polisi"
+                            placeholder="Contoh: AG 2222 KCF"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BUTTON -->
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                    id="submitBtn"
+                >
+
+                    DAFTAR SEKARANG →
+
+                </button>
+
+
+            </form>
+
+
+
+            <!-- =================================================
+                 LOADING
+            ================================================== -->
+
+            <div
+                class="loading"
+                id="loading"
+            >
+
+                <span class="spinner"></span>
+
+                Menyimpan data...
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SUCCESS
+            ================================================== -->
+
+            <div
+                class="success"
+                id="success"
+            >
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ERROR
+            ================================================== -->
+
+            <div
+                class="error"
+                id="error"
+            >
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FOOTER
+            ================================================== -->
+
+            <div class="footer">
+
+                © 2026 • Sistem Pendaftaran Kendaraan
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =================================================
+         JAVASCRIPT
+    ================================================== -->
+
+    <?!= include('JS'); ?>
+
+
+</body>
+
+</html>
