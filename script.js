@@ -23,24 +23,75 @@ function setProgress(total) {
   }
 }
 
-async function loadQuota() {
+function loadQuota() {
   if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_URL")) {
     setProgress(0);
     statusEl.textContent =
-      "Website belum dihubungkan ke Google Sheets. Masukkan URL Apps Script pada script.js.";
+      "Website belum terhubung ke Google Sheets.";
     return;
   }
 
-  try {
-    const res = await fetch(`${APPS_SCRIPT_URL}?action=count`, {
-      cache: "no-store"
-    });
+  const callbackName =
+    "quotaCallback_" + Date.now();
 
-    const data = await res.json();
+  window[callbackName] = function(data) {
 
-    if (!data.success) {
-      throw new Error(data.message || "Gagal membaca kuota.");
+    try {
+
+      if (!data.success) {
+        throw new Error(
+          data.message || "Gagal membaca kuota."
+        );
+      }
+
+      console.log("Data kuota:", data);
+
+      setProgress(data.total);
+
+      statusEl.textContent =
+        `${data.total} pendaftar dari ${data.quota} kuota`;
+
+    } catch (error) {
+
+      console.error(error);
+
+      setProgress(0);
+
+      statusEl.textContent =
+        "Data kuota tidak dapat dibaca.";
+
+    } finally {
+
+      delete window[callbackName];
+
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+
     }
+  };
+
+  const script = document.createElement("script");
+
+  script.src =
+    `${APPS_SCRIPT_URL}?action=count&callback=${callbackName}&t=${Date.now()}`;
+
+  script.onerror = function() {
+
+    setProgress(0);
+
+    statusEl.textContent =
+      "Koneksi ke Google Sheets gagal.";
+
+    delete window[callbackName];
+
+    if (script.parentNode) {
+      script.parentNode.removeChild(script);
+    }
+  };
+
+  document.body.appendChild(script);
+}
 
     setProgress(data.total);
 
