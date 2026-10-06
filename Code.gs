@@ -3,7 +3,7 @@
 // =====================================================
 
 // ID GOOGLE SPREADSHEET KAMU
-const SPREADSHEET_ID = 'ISI_ID_SPREADSHEET_KAMU';
+const SPREADSHEET_ID = '1wKk0eJ-iB3i1OB5c97ccatff7UkNheQwGJDLQIqxLE4';
 
 // Nama sheet tempat data disimpan
 const SHEET_NAME = 'DATA PENDAFTAR';
