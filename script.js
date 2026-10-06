@@ -1,327 +1,193 @@
-// ======================================================
-// KONFIGURASI GOOGLE APPS SCRIPT
-// ======================================================
-
 const SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbwrhhS7VFrOi__IJ9B7ADVOjv2_1me8pzOuMWoCM7xzF70d2YyseNo0hHiMiO6tn-me/exec";
+"https://script.google.com/macros/s/AKfycbwrhhS7VFrOi__IJ9B7ADVOjv2_1me8pzOuMWoCM7xzF70d2YyseNo0hHiMiO6tn-me/exec";
 
-
-// ======================================================
-// MENUNGGU HALAMAN SELESAI DIMUAT
-// ======================================================
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Cari form
-    const form = document.querySelector("form");
+    const form = document.getElementById("formPendaftaran");
 
     if (!form) {
-        console.error("FORM TIDAK DITEMUKAN!");
+        console.error("Form pendaftaran tidak ditemukan.");
         return;
     }
 
-    console.log("Form ditemukan.");
-    console.log("Google Apps Script URL:", SCRIPT_URL);
+
+    form.addEventListener("submit", function (e) {
+
+        e.preventDefault();
 
 
-    // ==================================================
-    // EVENT SUBMIT FORM
-    // ==================================================
+        const nama =
+            document.getElementById("nama").value.trim();
 
-    form.addEventListener("submit", async function (event) {
+        const whatsapp =
+            document.getElementById("whatsapp").value.trim();
 
-        event.preventDefault();
+        const merk =
+            document.getElementById("merk").value.trim();
 
-        console.log("Tombol submit ditekan.");
+        const nopol =
+            document.getElementById("nopol").value.trim().toUpperCase();
 
 
-        // ----------------------------------------------
-        // AMBIL DATA INPUT
-        // ----------------------------------------------
+        // VALIDASI
+
+        if (!whatsapp) {
+            alert("Nomor WhatsApp wajib diisi.");
+            return;
+        }
+
+        if (!nama) {
+            alert("Nama wajib diisi.");
+            return;
+        }
+
+        if (!merk) {
+            alert("Merk / tipe sepeda motor wajib diisi.");
+            return;
+        }
+
+        if (!nopol) {
+            alert("Nomor polisi wajib diisi.");
+            return;
+        }
+
+
+        // BUAT IFRAME TERSEMBUNYI
+
+        let iframe =
+            document.getElementById("googleSubmitFrame");
+
+        if (!iframe) {
+
+            iframe = document.createElement("iframe");
+
+            iframe.id = "googleSubmitFrame";
+            iframe.name = "googleSubmitFrame";
+
+            iframe.style.display = "none";
+
+            document.body.appendChild(iframe);
+        }
+
+
+        // BUAT FORM UNTUK GOOGLE APPS SCRIPT
+
+        const googleForm =
+            document.createElement("form");
+
+        googleForm.method = "POST";
+        googleForm.action = SCRIPT_URL;
+        googleForm.target = "googleSubmitFrame";
+        googleForm.style.display = "none";
+
+
+        // DATA NAMA
 
         const namaInput =
-            document.getElementById("nama") ||
-            document.getElementById("namaGuru") ||
-            document.querySelector('[name="nama"]');
+            document.createElement("input");
+
+        namaInput.type = "hidden";
+        namaInput.name = "nama";
+        namaInput.value = nama;
+
+        googleForm.appendChild(namaInput);
+
+
+        // DATA WHATSAPP
 
         const whatsappInput =
-            document.getElementById("whatsapp") ||
-            document.getElementById("noWhatsapp") ||
-            document.querySelector('[name="whatsapp"]');
+            document.createElement("input");
+
+        whatsappInput.type = "hidden";
+        whatsappInput.name = "whatsapp";
+        whatsappInput.value = whatsapp;
+
+        googleForm.appendChild(whatsappInput);
+
+
+        // DATA MERK
 
         const merkInput =
-            document.getElementById("merk") ||
-            document.getElementById("merkMotor") ||
-            document.querySelector('[name="merk"]');
+            document.createElement("input");
+
+        merkInput.type = "hidden";
+        merkInput.name = "merk";
+        merkInput.value = merk;
+
+        googleForm.appendChild(merkInput);
+
+
+        // DATA NOPOL
 
         const nopolInput =
-            document.getElementById("nopol") ||
-            document.getElementById("nomorPolisi") ||
-            document.querySelector('[name="nopol"]');
+            document.createElement("input");
+
+        nopolInput.type = "hidden";
+        nopolInput.name = "nopol";
+        nopolInput.value = nopol;
+
+        googleForm.appendChild(nopolInput);
 
 
-        // ----------------------------------------------
-        // CEK INPUT
-        // ----------------------------------------------
+        document.body.appendChild(googleForm);
 
-        if (!namaInput) {
-            alert("Input nama tidak ditemukan.");
-            console.error("Input nama tidak ditemukan.");
-            return;
-        }
 
-        if (!whatsappInput) {
-            alert("Input nomor WhatsApp tidak ditemukan.");
-            console.error("Input WhatsApp tidak ditemukan.");
-            return;
-        }
+        // TOMBOL
 
-        if (!merkInput) {
-            alert("Input merek sepeda motor tidak ditemukan.");
-            console.error("Input merek tidak ditemukan.");
-            return;
-        }
+        const button =
+            document.getElementById("submitButton");
 
-        if (!nopolInput) {
-            alert("Input nomor polisi tidak ditemukan.");
-            console.error("Input nomor polisi tidak ditemukan.");
-            return;
+        if (button) {
+
+            button.disabled = true;
+
+            button.dataset.oldText =
+                button.innerHTML;
+
+            button.innerHTML =
+                "MENGIRIM...";
+
         }
 
 
-        // ----------------------------------------------
-        // BERSIHKAN DATA
-        // ----------------------------------------------
+        // KIRIM
 
-        const nama = namaInput.value.trim();
-        const whatsapp = whatsappInput.value.trim();
-        const merk = merkInput.value.trim();
-        const nopol = nopolInput.value.trim();
+        googleForm.submit();
 
 
-        // ----------------------------------------------
-        // VALIDASI
-        // ----------------------------------------------
+        // TUNGGU PROSES
 
-        if (nama === "") {
-            alert("Silakan masukkan nama.");
-            namaInput.focus();
-            return;
-        }
-
-        if (whatsapp === "") {
-            alert("Silakan masukkan nomor WhatsApp.");
-            whatsappInput.focus();
-            return;
-        }
-
-        if (merk === "") {
-            alert("Silakan masukkan merek sepeda motor.");
-            merkInput.focus();
-            return;
-        }
-
-        if (nopol === "") {
-            alert("Silakan masukkan nomor polisi.");
-            nopolInput.focus();
-            return;
-        }
-
-
-        // ----------------------------------------------
-        // DATA YANG DIKIRIM KE GOOGLE SHEETS
-        // ----------------------------------------------
-
-        const data = {
-            nama: nama,
-            whatsapp: whatsapp,
-            merk: merk,
-            nopol: nopol
-        };
-
-
-        console.log("Data yang akan dikirim:");
-        console.log(data);
-
-
-        // ----------------------------------------------
-        // CARI TOMBOL SUBMIT
-        // ----------------------------------------------
-
-        const submitButton =
-            form.querySelector('button[type="submit"]') ||
-            form.querySelector('input[type="submit"]');
-
-
-        // ----------------------------------------------
-        // UBAH TOMBOL SAAT MENGIRIM
-        // ----------------------------------------------
-
-        let originalButtonText = "";
-
-        if (submitButton) {
-
-            originalButtonText =
-                submitButton.textContent ||
-                submitButton.value ||
-                "";
-
-            submitButton.disabled = true;
-
-            if (submitButton.tagName === "INPUT") {
-                submitButton.value = "Mengirim...";
-            } else {
-                submitButton.textContent = "Mengirim...";
-            }
-        }
-
-
-        // ==================================================
-        // KIRIM KE GOOGLE APPS SCRIPT
-        // ==================================================
-
-        try {
-
-            console.log("Menghubungkan ke Google Apps Script...");
-
-
-            const response = await fetch(SCRIPT_URL, {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
-                },
-
-                body: JSON.stringify(data)
-
-            });
-
-
-            console.log("Status response:", response.status);
-
-
-            // ------------------------------------------
-            // AMBIL HASIL RESPONSE
-            // ------------------------------------------
-
-            const responseText = await response.text();
-
-            console.log("Response dari server:");
-            console.log(responseText);
-
-
-            let result;
-
-            try {
-
-                result = JSON.parse(responseText);
-
-            } catch (jsonError) {
-
-                console.warn(
-                    "Response bukan JSON:",
-                    responseText
-                );
-
-                // Google Apps Script kadang memberikan
-                // response redirect / text biasa.
-
-                result = {
-                    success: response.ok,
-                    message: responseText
-                };
-            }
-
-
-            // ==================================================
-            // JIKA BERHASIL
-            // ==================================================
-
-            if (
-                response.ok &&
-                (
-                    result.success === true ||
-                    result.status === "success" ||
-                    result.message === "Data berhasil disimpan"
-                )
-            ) {
-
-                alert(
-                    "PENDAFTARAN BERHASIL!\n\n" +
-                    "Nama: " + nama + "\n" +
-                    "WhatsApp: " + whatsapp + "\n" +
-                    "Motor: " + merk + "\n" +
-                    "No. Polisi: " + nopol
-                );
-
-
-                // Reset form
-
-                form.reset();
-
-
-                console.log(
-                    "Data berhasil dikirim ke Google Sheets."
-                );
-
-
-            } else {
-
-                console.error(
-                    "Google Apps Script mengembalikan error:",
-                    result
-                );
-
-                alert(
-                    "Data gagal disimpan.\n\n" +
-                    "Silakan coba lagi.\n\n" +
-                    "Detail: " +
-                    (
-                        result.error ||
-                        result.message ||
-                        "Server tidak memberikan keterangan."
-                    )
-                );
-            }
-
-
-        } catch (error) {
-
-            // ==================================================
-            // ERROR KONEKSI
-            // ==================================================
-
-            console.error(
-                "ERROR SAAT MENGIRIM DATA:",
-                error
-            );
-
+        setTimeout(function () {
 
             alert(
-                "TIDAK DAPAT TERHUBUNG KE SERVER.\n\n" +
-                "Periksa koneksi internet dan deployment Google Apps Script.\n\n" +
-                "Error: " +
-                error.message
+                "PENDAFTARAN BERHASIL!\n\n" +
+                "Nama: " + nama + "\n" +
+                "WhatsApp: " + whatsapp + "\n" +
+                "Motor: " + merk + "\n" +
+                "No. Polisi: " + nopol
             );
 
-        }
+
+            // RESET FORM
+
+            form.reset();
 
 
-        // ==================================================
-        // KEMBALIKAN TOMBOL
-        // ==================================================
+            // KEMBALIKAN TOMBOL
 
-        if (submitButton) {
+            if (button) {
 
-            submitButton.disabled = false;
+                button.disabled = false;
 
-            if (submitButton.tagName === "INPUT") {
-                submitButton.value = originalButtonText;
-            } else {
-                submitButton.textContent = originalButtonText;
+                button.innerHTML =
+                    button.dataset.oldText;
             }
-        }
+
+
+            googleForm.remove();
+
+        }, 2000);
 
     });
 
