@@ -1,50 +1,95 @@
 const SHEET_NAME = "Sheet1";
+const MAX_PENDAFTAR = 60;
+
+
+// ==========================================
+// TEST WEB APP
+// ==========================================
 
 function doGet() {
+
   return ContentService
-    .createTextOutput("TSM CLEAN Web App Aktif")
-    .setMimeType(ContentService.MimeType.TEXT);
+    .createTextOutput(
+      "TSM CLEAN Web App Aktif"
+    )
+    .setMimeType(
+      ContentService.MimeType.TEXT
+    );
+
 }
 
+
+// ==========================================
+// MENERIMA PENDAFTARAN DARI WEBSITE
+// ==========================================
+
 function doPost(e) {
+
   try {
 
-    const sheet = SpreadsheetApp
-      .getActiveSpreadsheet()
-      .getSheetByName(SHEET_NAME);
+    const sheet =
+      SpreadsheetApp
+        .getActiveSpreadsheet()
+        .getSheetByName(SHEET_NAME);
+
+
+    // CEK SHEET
 
     if (!sheet) {
-      throw new Error("Sheet '" + SHEET_NAME + "' tidak ditemukan.");
+
+      throw new Error(
+        "Sheet '" + SHEET_NAME + "' tidak ditemukan."
+      );
+
     }
 
-    let data = {};
 
-    // Jika data dikirim sebagai JSON
-    if (
-      e.postData &&
-      e.postData.contents &&
-      e.postData.type &&
-      e.postData.type.indexOf("application/json") !== -1
-    ) {
-      data = JSON.parse(e.postData.contents);
-    } 
-    
-    // Jika dikirim sebagai form
-    else {
-      data = e.parameter;
+    // ==========================================
+    // AMBIL DATA DARI WEBSITE
+    // ==========================================
+
+    const data = e.parameter;
+
+    const nama =
+      data.nama || "";
+
+    const whatsapp =
+      data.whatsapp || "";
+
+    const merk =
+      data.merk || "";
+
+    const nopol =
+      data.nopol || "";
+
+
+    // ==========================================
+    // VALIDASI DATA
+    // ==========================================
+
+    if (!nama) {
+      throw new Error("Nama belum diisi.");
     }
 
-    const nama = data.nama || "";
-    const whatsapp = data.whatsapp || "";
-    const merk = data.merk || "";
-    const nopol = data.nopol || "";
-
-    if (!nama || !whatsapp || !merk || !nopol) {
-      throw new Error("Data belum lengkap.");
+    if (!whatsapp) {
+      throw new Error("Nomor WhatsApp belum diisi.");
     }
 
-    // Header otomatis
+    if (!merk) {
+      throw new Error("Merk sepeda motor belum diisi.");
+    }
+
+    if (!nopol) {
+      throw new Error("Nomor polisi belum diisi.");
+    }
+
+
+    // ==========================================
+    // BUAT HEADER JIKA SHEET MASIH KOSONG
+    // ==========================================
+
     if (sheet.getLastRow() === 0) {
+
       sheet.appendRow([
         "NO",
         "WAKTU",
@@ -53,27 +98,95 @@ function doPost(e) {
         "MERK SEPEDA MOTOR",
         "NOPOL"
       ]);
+
     }
 
-    const nomor = Math.max(1, sheet.getLastRow());
+
+    // ==========================================
+    // HITUNG PENDAFTAR
+    // ==========================================
+
+    const jumlahPendaftar =
+      Math.max(
+        0,
+        sheet.getLastRow() - 1
+      );
+
+
+    // ==========================================
+    // CEK KUOTA 60
+    // ==========================================
+
+    if (jumlahPendaftar >= MAX_PENDAFTAR) {
+
+      return ContentService
+        .createTextOutput(
+          "KUOTA_PENUH"
+        )
+        .setMimeType(
+          ContentService.MimeType.TEXT
+        );
+
+    }
+
+
+    // ==========================================
+    // NOMOR PENDAFTARAN
+    // ==========================================
+
+    const nomor =
+      jumlahPendaftar + 1;
+
+
+    // ==========================================
+    // SIMPAN KE GOOGLE SHEETS
+    // ==========================================
 
     sheet.appendRow([
+
       nomor,
+
       new Date(),
+
       nama,
+
       whatsapp,
+
       merk,
+
       nopol
+
     ]);
 
+
+    // ==========================================
+    // BERHASIL
+    // ==========================================
+
     return ContentService
-      .createTextOutput("SUCCESS")
-      .setMimeType(ContentService.MimeType.TEXT);
+      .createTextOutput(
+        "SUCCESS|" + nomor
+      )
+      .setMimeType(
+        ContentService.MimeType.TEXT
+      );
+
 
   } catch (error) {
 
+
+    // ==========================================
+    // ERROR
+    // ==========================================
+
     return ContentService
-      .createTextOutput("ERROR: " + error.message)
-      .setMimeType(ContentService.MimeType.TEXT);
+      .createTextOutput(
+        "ERROR|" + error.message
+      )
+      .setMimeType(
+        ContentService.MimeType.TEXT
+      );
+
   }
+
 }
